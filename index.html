@@ -1,47 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Byte & Brew</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+const menuData = [
+  { id: 1, name: "Espresso", price: 120, type: "coffee" },
+  { id: 2, name: "Cappuccino", price: 180, type: "coffee" },
+  { id: 3, name: "Cold Brew", price: 200, type: "coffee" },
+  { id: 4, name: "Brownie", price: 150, type: "dessert" },
+  { id: 5, name: "Cheesecake", price: 220, type: "dessert" }
+];
 
-  <!-- Header -->
-  <header class="navbar">
-    <h1>Byte & Brew</h1>
-    <nav>
-      <button data-filter="all" class="active">All</button>
-      <button data-filter="coffee">Coffee</button>
-      <button data-filter="dessert">Desserts</button>
-    </nav>
-  </header>
+let cart = [];
+let currentFilter = "all";
 
-  <!-- Main -->
-  <main class="container">
+const menuEl = document.getElementById("menuItems");
+const cartEl = document.getElementById("cartItems");
+const totalEl = document.getElementById("totalPrice");
 
-    <!-- Menu -->
-    <section class="menu">
-      <h2>Menu</h2>
-      <div id="menuItems" class="menu-grid"></div>
-    </section>
+/* Render menu */
+function renderMenu() {
+  menuEl.innerHTML = "";
 
-    <!-- Cart -->
-    <aside class="cart">
-      <h2>Your Order</h2>
-      <ul id="cartItems"></ul>
-      <p class="total">Total: ₹<span id="totalPrice">0</span></p>
-      <button class="checkout">Checkout</button>
-    </aside>
+  const filtered = currentFilter === "all"
+    ? menuData
+    : menuData.filter(item => item.type === currentFilter);
 
-  </main>
+  filtered.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-  <!-- Footer -->
-  <footer>
-    <p>© 2026 Byte & Brew</p>
-  </footer>
+    card.innerHTML = `
+      <h3>${item.name}</h3>
+      <p>₹${item.price}</p>
+      <button>Add to Cart</button>
+    `;
 
-  <script src="script.js"></script>
-</body>
-</html>
+    card.querySelector("button").addEventListener("click", () => {
+      cart.push(item);
+      renderCart();
+    });
+
+    menuEl.appendChild(card);
+  });
+}
+
+/* Render cart */
+function renderCart() {
+  cartEl.innerHTML = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price;
+    const li = document.createElement("li");
+    li.textContent = `${item.name} — ₹${item.price}`;
+    cartEl.appendChild(li);
+  });
+
+  totalEl.textContent = total;
+}
+
+/* Filters */
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("nav button")
+      .forEach(b => b.classList.remove("active"));
+
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderMenu();
+  });
+});
+
+/* Init */
+renderMenu();
+renderCart();
