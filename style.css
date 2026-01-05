@@ -1,10 +1,11 @@
 :root {
-  --bg: #F4EFEA;
-  --ink: #2B1B17;
-  --brown: #4E342E;
-  --crema: #C7A17A;
-  --paper: #EFE6D8;
+  --bg: #F7F2EB;        /* lighter canvas */
+  --ink: #2A1C16;       /* softer ink */
+  --brown: #6B4A3A;     /* lighter espresso */
+  --crema: #D6B892;     /* warm crema */
+  --paper: #F1E8DA;     /* lighter card surface */
 }
+
 
 * {
   box-sizing: border-box;
