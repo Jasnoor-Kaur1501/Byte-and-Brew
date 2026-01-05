@@ -1,72 +1,64 @@
-const menuData = [
-  { id: 1, name: "Espresso", price: 120, type: "coffee" },
-  { id: 2, name: "Cappuccino", price: 180, type: "coffee" },
-  { id: 3, name: "Cold Brew", price: 200, type: "coffee" },
-  { id: 4, name: "Brownie", price: 150, type: "dessert" },
-  { id: 5, name: "Cheesecake", price: 220, type: "dessert" }
+const data = [
+  { id: 1, title: "Espresso", desc: "Strong, concentrated coffee brewed under pressure.", type: "coffee" },
+  { id: 2, title: "Cappuccino", desc: "Espresso with steamed milk and foam.", type: "coffee" },
+  { id: 3, title: "Cold Brew", desc: "Slow brewed with cold water for 12–18 hours.", type: "coffee" },
+  { id: 4, title: "Pour Over", desc: "Manual brewing for clarity and control.", type: "brew" },
+  { id: 5, title: "French Press", desc: "Full-bodied immersion brewing.", type: "brew" }
 ];
 
-let cart = [];
+let saved = [];
 let currentFilter = "all";
 
-const menuEl = document.getElementById("menuItems");
-const cartEl = document.getElementById("cartItems");
-const totalEl = document.getElementById("totalPrice");
+const grid = document.getElementById("menuItems");
+const list = document.getElementById("cartItems");
+const total = document.getElementById("totalPrice");
+const filters = document.querySelectorAll(".filter-btn");
 
-/* Render menu */
-function renderMenu() {
-  menuEl.innerHTML = "";
+function renderCards() {
+  grid.innerHTML = "";
 
-  const filtered = currentFilter === "all"
-    ? menuData
-    : menuData.filter(item => item.type === currentFilter);
+  const filtered =
+    currentFilter === "all"
+      ? data
+      : data.filter(item => item.type === currentFilter);
 
   filtered.forEach(item => {
     const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
-      <h3>${item.name}</h3>
-      <p>₹${item.price}</p>
-      <button>Add to Cart</button>
+      <h3>${item.title}</h3>
+      <p>${item.desc}</p>
+      <button>Save Note</button>
     `;
 
     card.querySelector("button").addEventListener("click", () => {
-      cart.push(item);
-      renderCart();
+      saved.push(item.title);
+      renderSaved();
     });
 
-    menuEl.appendChild(card);
+    grid.appendChild(card);
   });
 }
 
-/* Render cart */
-function renderCart() {
-  cartEl.innerHTML = "";
-  let total = 0;
-
-  cart.forEach(item => {
-    total += item.price;
+function renderSaved() {
+  list.innerHTML = "";
+  saved.forEach(title => {
     const li = document.createElement("li");
-    li.textContent = `${item.name} — ₹${item.price}`;
-    cartEl.appendChild(li);
+    li.textContent = title;
+    list.appendChild(li);
   });
-
-  totalEl.textContent = total;
+  total.textContent = saved.length;
 }
 
-/* Filters */
-document.querySelectorAll("nav button").forEach(btn => {
+filters.forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll("nav button")
-      .forEach(b => b.classList.remove("active"));
-
+    filters.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     currentFilter = btn.dataset.filter;
-    renderMenu();
+    renderCards();
   });
 });
 
-/* Init */
-renderMenu();
-renderCart();
+renderCards();
+renderSaved();
