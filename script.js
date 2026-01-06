@@ -1,12 +1,16 @@
-const buttons = document.querySelectorAll(".rail-btn");
-const panels = document.querySelectorAll(".panel");
+const reveals = document.querySelectorAll(".reveal");
 
-buttons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    buttons.forEach(b => b.classList.remove("active"));
-    panels.forEach(p => p.classList.remove("active"));
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+      }
+    });
+  },
+  {
+    threshold: 0.15
+  }
+);
 
-    btn.classList.add("active");
-    document.getElementById(btn.dataset.view).classList.add("active");
-  });
-});
+reveals.forEach(el => observer.observe(el));
